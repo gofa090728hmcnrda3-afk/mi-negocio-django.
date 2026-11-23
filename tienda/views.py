@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Categoria, Producto, Cliente
 from .forms import CategoriaForm, ProductoForm, ClienteForm
 
+from django.db.models import Count, Sum
+
 # ---------- INICIO ----------
 def inicio(request):
     productos = Producto.objects.filter(activo=True)
@@ -130,8 +132,7 @@ def eliminar_cliente(request, pk):
         messages.success(request, 'Cliente eliminado correctamente.')
         return redirect('lista_clientes')
     return render(request, 'tienda/clientes/eliminar.html', {'cliente': cliente})
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum
+
 @login_required
 def dashboard(request):
     total_categorias = Categoria.objects.count()
