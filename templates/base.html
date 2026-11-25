@@ -91,12 +91,3 @@ x;">Cerrar sesión</button>
     </footer>
 </body>
 </html>
-{% if user.is_authenticated %} 
- <span style="color:#38bdf8;">�� {{ user.username }}</span>  <a href="{% url 'dashboard' %}">Dashboard</a> 
- <form action="{% url 'logout' %}" method="post" style="display:inline;" > 
- {% csrf_token %} 
- <button type="submit" class="btn btn-danger" style="margin-left:15px; ">Cerrar sesión</button>
- </form> 
-{% else %} 
- <a href="{% url 'login' %}">Iniciar sesión</a> 
-{% endif %} 
