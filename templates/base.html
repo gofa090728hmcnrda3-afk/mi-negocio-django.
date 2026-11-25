@@ -1,27 +1,37 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Negocio{% endblock %}</title>
+    <!-- Carga tu archivo CSS externo si lo necesitas -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f4f6f8; color: #333; }
-        header {
+        body { font-family: Arial, sans-serif; background: #f4f6f8; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* Header y Navegación */
+        header.site-header {
             background: #1e293b; color: #fff; padding: 15px 30px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-        header h1 { font-size: 22px; }
-        header nav a {
-            color: #fff; text-decoration: none; margin-left: 20px; font-weight: bold;
+        header.site-header h1 a { font-size: 22px; color: #fff; text-decoration: none; }
+        header.site-header nav { display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
+        header.site-header nav a {
+            color: #fff; text-decoration: none; font-weight: bold;
         }
-        header nav a:hover { color: #38bdf8; }
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        header.site-header nav a:hover { color: #38bdf8; }
+        .user-greeting { color: #38bdf8; font-weight: bold; }
+
+        /* Contenedor principal */
+        main.container { max-width: 1100px; width: 100%; margin: 30px auto; padding: 0 20px; flex: 1; }
         .card {
             background: #fff; border-radius: 8px; padding: 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
         }
+
+        /* Botones */
         .btn {
             display: inline-block; padding: 10px 16px; border-radius: 6px;
             text-decoration: none; color: #fff; font-weight: bold; border: none;
@@ -33,61 +43,70 @@
         .btn-warning { background: #d97706; }
         .btn-secondary { background: #64748b; }
         .btn:hover { opacity: 0.9; }
+
+        /* Tablas */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background: #f1f5f9; }
+
+        /* Mensajes de Django */
         .messages { list-style: none; margin-bottom: 15px; }
-        .messages li { padding: 10px; border-radius: 6px; margin-bottom: 8px; }
+        .messages li { padding: 12px; border-radius: 6px; margin-bottom: 8px; font-weight: bold; }
         .messages .success { background: #dcfce7; color: #166534; }
         .messages .error { background: #fee2e2; color: #991b1b; }
-        footer { text-align: center; padding: 20px; color: #64748b; font-size: 13px; }
-        .form-control {
-    width: 100%; padding: 10px; margin-bottom: 12px;
-    border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;
-}
-.form-check-input { margin-right: 8px; }
-form label { font-weight: bold; display: block; margin-bottom: 4px; }
-form p { margin-bottom: 12px; }
+        .messages .warning { background: #fef3c7; color: #92400e; }
+        .messages .info { background: #e0f2fe; color: #075985; }
 
+        /* Formularios */
+        .form-control {
+            width: 100%; padding: 10px; margin-bottom: 12px;
+            border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;
+        }
+        .form-check-input { margin-right: 8px; }
+        form label { font-weight: bold; display: block; margin-bottom: 4px; }
+        form p { margin-bottom: 12px; }
+
+        /* Footer */
+        footer.site-footer { text-align: center; padding: 20px; color: #64748b; font-size: 13px; margin-top: auto; }
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>🛒 Mi Negocio</h1>
+    <header class="site-header">
+        <h1><a href="{% url 'inicio' %}" class="logo">🛒 Mi Negocio</a></h1>
         <nav>
-<a href="{% url 'inicio' %}">Inicio</a>
-<a href="{% url 'lista_productos' %}">Productos</a>
-<a href="{% url 'lista_categorias' %}">Categorías</a>
-<a href="{% url 'lista_clientes' %}">Clientes</a>
-{% if user.is_authenticated %}
-<a href="{% url 'dashboard' %}">Dashboard</a>
-<span style="color:#38bdf8;">👤 {{ user.username }}</span>
-<form action="{% url 'logout' %}" method="post" style="display:inline
-;">
-{% csrf_token %}
-<button type="submit" class="btn btn-danger" style="margin-left:10p
-x;">Cerrar sesión</button>
-</form>
-{% else %}
-<a href="{% url 'login' %}">Iniciar sesión</a>
-{% endif %}
-</nav>
+            <a href="{% url 'inicio' %}">Inicio</a>
+            <a href="{% url 'lista_productos' %}">Productos</a>
+            <a href="{% url 'lista_categorias' %}">Categorías</a>
+            <a href="{% url 'lista_clientes' %}">Clientes</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <span class="user-greeting">👤 Hola, {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+            {% endif %}
+        </nav>
     </header>
 
-    <div class="container">
+    <main class="container">
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <li class="{{ message.tags }}">{{ message }}</li>
+                    <li class="message {{ message.tags }}">{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
-    <footer>
-        Proyecto Integrador - Software que Crece con tu Negocio &copy; {% now "Y" %}
+    <footer class="site-footer">
+        <p>Proyecto Integrador - Software que Crece con tu Negocio &copy; {% now "Y" %}</p>
     </footer>
 </body>
 </html>
