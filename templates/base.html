@@ -65,8 +65,8 @@ form p { margin-bottom: 12px; }
 <form action="{% url 'logout' %}" method="post" style="display:inline
 ;">
 {% csrf_token %}
-<button type="submit" class="btn btn-danger" style="margin-left:10px;">Cerrar sesión
-</button>
+<button type="submit" class="btn btn-danger" style="margin-left:10p
+x;">Cerrar sesión</button>
 </form>
 {% else %}
 <a href="{% url 'login' %}">Iniciar sesión</a>
@@ -91,4 +91,12 @@ form p { margin-bottom: 12px; }
     </footer>
 </body>
 </html>
-<a href="{% url 'logout' %}">Cerrar sesión</a>
+{% if user.is_authenticated %} 
+ <span style="color:#38bdf8;">�� {{ user.username }}</span>  <a href="{% url 'dashboard' %}">Dashboard</a> 
+ <form action="{% url 'logout' %}" method="post" style="display:inline;" > 
+ {% csrf_token %} 
+ <button type="submit" class="btn btn-danger" style="margin-left:15px; ">Cerrar sesión</button>
+ </form> 
+{% else %} 
+ <a href="{% url 'login' %}">Iniciar sesión</a> 
+{% endif %} 
